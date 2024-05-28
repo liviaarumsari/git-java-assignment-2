@@ -1,5 +1,6 @@
 package org.example.javaassignment2.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -21,6 +22,7 @@ public class User {
     private String password;
 
     @OneToOne(mappedBy = "user")
+    @JsonManagedReference
     private Address address;
 
     public User() {}
