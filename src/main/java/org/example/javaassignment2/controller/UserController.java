@@ -1,5 +1,6 @@
 package org.example.javaassignment2.controller;
 
+import org.example.javaassignment2.entity.Address;
 import org.example.javaassignment2.entity.User;
 import org.example.javaassignment2.exception.UserNotFoundException;
 import org.example.javaassignment2.repository.AddressRepository;
@@ -37,7 +38,8 @@ public class UserController {
         return users;
     }
 
-    // Get one user + address
+    // Get one user + address (id static: 1)
+    // Return exception if user not found
     @GetMapping("/id")
     public User retrieveUser() {
         Long id = 1L;
@@ -53,7 +55,7 @@ public class UserController {
         return user.get();
     }
 
-    // Add new user
+    // Add new user with static data
     @PostMapping("")
     public String addNewUser () {
         User newUser = new User("liviaarumsari16@gmail.com", "Livia", "livia123");
@@ -61,6 +63,25 @@ public class UserController {
 
         logger.info("Berhasil menambahkan user baru: " + newUser);
 
-        return "Berhasil";
+        return "Berhasil menambahkan user dengan id " + newUser.getId();
+    }
+
+
+    // Add new address by user id
+    // Get the user id of a user with empty address
+    // Return exception if all user already has address
+    @PostMapping("/id/address")
+    public String addNewAddress () {
+        User user = userRepository.findFirstByAddressIsNull();
+
+        if (user == null) {
+            logger.info("Tidak ditemukan user tanpa alamat");
+            throw new UserNotFoundException("Tidak ditemukan user tanpa alamat");
+        }
+
+        Address newAddress = new Address("Bandung", "Indonesia", "Jawa Barat", "Jl. Ganesa No. 10", "41305", user);
+        addressRepository.save(newAddress);
+
+        return "Berhasil menambahkan address ke user dengan id " + user.getId();
     }
 }
